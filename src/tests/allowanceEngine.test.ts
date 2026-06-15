@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   assessRisk,
   createAllowance,
+  getEffectiveStatus,
   getRemainingAllowance,
+  isExpired,
+  revokeAllowance,
   simulateSpend,
 } from "../lib/allowanceEngine";
 import type { Allowance, SpendAttempt } from "../types/allowance";
@@ -83,6 +86,22 @@ describe("allowance engine", () => {
     expect(result.reason).toContain("remaining weekly allowance");
   });
 
+  it("blocks spend when amount is zero or negative", () => {
+    const zeroAmount = simulateSpend(makeAllowance(), makeAttempt({ amount: 0 }), testNow);
+    const negativeAmount = simulateSpend(
+      makeAllowance(),
+      makeAttempt({ amount: -1 }),
+      testNow,
+    );
+
+    expect(zeroAmount.decision).toBe("blocked");
+    expect(zeroAmount.risk).toBe("high");
+    expect(zeroAmount.reason).toContain("amount must be greater than zero");
+    expect(zeroAmount.auditEvent.message).toContain("amount must be greater than zero");
+    expect(negativeAmount.decision).toBe("blocked");
+    expect(negativeAmount.reason).toContain("amount must be greater than zero");
+  });
+
   it("blocks spend above max single transaction", () => {
     const result = simulateSpend(makeAllowance(), makeAttempt({ amount: 60 }), testNow);
 
@@ -113,6 +132,7 @@ describe("allowance engine", () => {
     expect(result.decision).toBe("blocked");
     expect(result.risk).toBe("high");
     expect(result.reason).toContain("revoked");
+    expect(result.auditEvent.message).toContain("revoked");
   });
 
   it("blocks spend on an expired allowance", () => {
@@ -125,6 +145,49 @@ describe("allowance engine", () => {
     expect(result.decision).toBe("blocked");
     expect(result.risk).toBe("high");
     expect(result.reason).toContain("expired");
+    expect(result.auditEvent.message).toContain("expired");
+  });
+
+  it("returns revoked status and allowance_revoked audit event when revoked", () => {
+    const allowance = makeAllowance();
+    const result = revokeAllowance(allowance, testNow);
+
+    expect(result.updatedAllowance.status).toBe("revoked");
+    expect(result.auditEvent.type).toBe("allowance_revoked");
+    expect(result.auditEvent.message).toContain("revoked");
+    expect(allowance.status).toBe("active");
+    expect(result.updatedAllowance).not.toBe(allowance);
+    expect(result.updatedAllowance.allowedCategories).not.toBe(allowance.allowedCategories);
+  });
+
+  it("gets active effective status for active unexpired allowance", () => {
+    expect(getEffectiveStatus(makeAllowance(), testNow)).toBe("active");
+  });
+
+  it("gets expired effective status when expiryDate is in the past", () => {
+    expect(
+      getEffectiveStatus(makeAllowance({ expiryDate: "2025-12-31T23:59:59.999Z" }), testNow),
+    ).toBe("expired");
+  });
+
+  it("gets revoked effective status when status is revoked, even if expired", () => {
+    expect(
+      getEffectiveStatus(
+        makeAllowance({
+          status: "revoked",
+          expiryDate: "2025-12-31T23:59:59.999Z",
+        }),
+        testNow,
+      ),
+    ).toBe("revoked");
+  });
+
+  it("treats expiryDate boundary as expired when now is equal to expiryDate", () => {
+    const allowance = makeAllowance({ expiryDate: testNow });
+
+    expect(isExpired(allowance, "2025-12-31T23:59:59.999Z")).toBe(false);
+    expect(isExpired(allowance, testNow)).toBe(true);
+    expect(isExpired(allowance, "2026-01-01T00:00:00.001Z")).toBe(true);
   });
 
   it("updates remaining allowance correctly after approved spend", () => {

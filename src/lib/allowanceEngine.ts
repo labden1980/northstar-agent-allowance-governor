@@ -75,7 +75,7 @@ export const getRemainingAllowance = (allowance: Allowance): number =>
   Math.max(allowance.weeklyLimit - allowance.spent, 0);
 
 export const isExpired = (allowance: Allowance, now?: Date | string): boolean =>
-  toDate(now).getTime() > new Date(allowance.expiryDate).getTime();
+  toDate(now).getTime() >= new Date(allowance.expiryDate).getTime();
 
 export const getEffectiveStatus = (
   allowance: Allowance,
@@ -195,7 +195,7 @@ export const revokeAllowance = (
     status: "revoked",
     allowedCategories: [...allowance.allowedCategories],
   };
-  const message = "Allowance revoked.";
+  const message = "Allowance revoked by policy owner; future spend attempts are blocked.";
 
   return {
     updatedAllowance,
