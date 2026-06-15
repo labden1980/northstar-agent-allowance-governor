@@ -7,6 +7,7 @@ import { DemoGuide } from "./components/DemoGuide";
 import { Header } from "./components/Header";
 import { QuickDemoActions } from "./components/QuickDemoActions";
 import { SimulationNotice } from "./components/SimulationNotice";
+import { SolanaMappingPanel } from "./components/SolanaMappingPanel";
 import { SpendSimulator } from "./components/SpendSimulator";
 import { sampleAllowances } from "./lib/seedData";
 import type { Allowance, AuditEvent, SpendResult } from "./types/allowance";
@@ -48,6 +49,10 @@ export default function App() {
         <Header />
         <SimulationNotice />
         <DemoGuide />
+        <SolanaMappingPanel
+          allowance={allowances.find((allowance) => allowance.id === "ai-research-agent") ?? allowances[0]}
+          auditEvents={auditEvents}
+        />
         <div className="flex justify-end">
           <button onClick={handleResetDemo} className="rounded-xl border border-cyan-300/30 px-4 py-2 font-semibold text-cyan-100 transition hover:bg-cyan-300/10">
             Reset demo
