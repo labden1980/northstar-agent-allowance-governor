@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { simulateSpend } from "../lib/allowanceEngine";
+import { getRemainingAllowance, simulateSpend } from "../lib/allowanceEngine";
 import { formatCurrency, riskStyles } from "../lib/formatters";
 import type { Allowance, SpendCategory, SpendResult } from "../types/allowance";
 
@@ -44,6 +44,7 @@ export function SpendSimulator({ allowances, latestSpendResult, onSimulate }: Sp
     <section className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 shadow-xl shadow-slate-950/30">
       <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Spend Simulator</p>
       <h2 className="text-2xl font-bold text-white">Test an agent spend</h2>
+      <p className="mt-2 text-sm text-slate-400">Approved and blocked decisions come from the shared policy engine, not UI-only validation.</p>
       <form onSubmit={handleSubmit} className="mt-5 grid gap-4">
         <label className="space-y-2 text-sm text-slate-300">Allowance<select value={allowanceId} onChange={(e) => setAllowanceId(e.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-cyan-400"><option value="">Select allowance</option>{allowances.map((allowance) => <option key={allowance.id} value={allowance.id}>{allowance.agentName}</option>)}</select></label>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -58,7 +59,12 @@ export function SpendSimulator({ allowances, latestSpendResult, onSimulate }: Sp
         <div className={`mt-5 rounded-2xl border p-4 ${latestSpendResult.decision === "approved" ? "border-emerald-400/30 bg-emerald-400/10" : "border-rose-400/30 bg-rose-400/10"}`}>
           <div className="flex flex-wrap items-center gap-3"><strong className="text-xl capitalize text-white">{latestSpendResult.decision}</strong><span className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase ${riskStyles[latestSpendResult.risk]}`}>{latestSpendResult.risk} risk</span></div>
           <p className="mt-2 text-sm text-slate-200">{latestSpendResult.reason}</p>
-          <p className="mt-1 text-xs text-slate-400">Updated spent: {formatCurrency(latestSpendResult.updatedAllowance.spent)}</p>
+          <dl className="mt-3 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">
+            <div><dt className="text-xs uppercase tracking-[0.14em] text-slate-500">Decision</dt><dd className="font-semibold capitalize">{latestSpendResult.decision}</dd></div>
+            <div><dt className="text-xs uppercase tracking-[0.14em] text-slate-500">Risk</dt><dd className="font-semibold capitalize">{latestSpendResult.risk}</dd></div>
+            <div><dt className="text-xs uppercase tracking-[0.14em] text-slate-500">Updated spent</dt><dd className="font-semibold">{formatCurrency(latestSpendResult.updatedAllowance.spent)}</dd></div>
+            <div><dt className="text-xs uppercase tracking-[0.14em] text-slate-500">Remaining allowance</dt><dd className="font-semibold">{formatCurrency(getRemainingAllowance(latestSpendResult.updatedAllowance))}</dd></div>
+          </dl>
         </div>
       )}
     </section>

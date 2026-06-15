@@ -7,11 +7,17 @@ interface AuditTrailProps {
 
 export function AuditTrail({ events }: AuditTrailProps) {
   const sortedEvents = [...events].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  const approvedSpends = events.filter((event) => event.type === "spend_approved").length;
+  const blockedSpends = events.filter((event) => event.type === "spend_blocked").length;
+  const revokedAllowances = events.filter((event) => event.type === "allowance_revoked").length;
 
   return (
     <section className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 shadow-xl shadow-slate-950/30">
       <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Audit Trail</p>
       <h2 className="text-2xl font-bold text-white">Policy events</h2>
+      <p className="mt-2 text-sm text-slate-400">
+        {events.length} total audit events · {approvedSpends} approved spends · {blockedSpends} blocked spends · {revokedAllowances} revoked allowances
+      </p>
       <div className="mt-5 space-y-3">
         {sortedEvents.length === 0 ? (
           <p className="rounded-2xl bg-slate-950/70 p-4 text-slate-400">No audit events yet.</p>

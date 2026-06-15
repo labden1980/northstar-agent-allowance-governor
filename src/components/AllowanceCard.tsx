@@ -35,6 +35,15 @@ export function AllowanceCard({ allowance, onRevoke }: AllowanceCardProps) {
       <div className="mt-4 flex flex-wrap gap-2">
         {allowance.allowedCategories.map((category) => <span key={category} className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-200">{category}</span>)}
       </div>
+      <div className="mt-5 rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">Policy checks</p>
+        <ul className="mt-3 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
+          <li>✓ Weekly cap: {formatCurrency(allowance.weeklyLimit)}</li>
+          <li>✓ Single-spend cap: {formatCurrency(allowance.maxSingleTransaction)}</li>
+          <li>✓ Category allowlist enforced</li>
+          <li>✓ Expiry/revoke control</li>
+        </ul>
+      </div>
       <button onClick={handleRevoke} disabled={isRevokeDisabled} className="mt-5 w-full rounded-xl border border-rose-400/30 px-4 py-2 font-semibold text-rose-100 transition hover:bg-rose-400/10 disabled:cursor-not-allowed disabled:border-slate-700 disabled:text-slate-500 disabled:hover:bg-transparent">Revoke allowance</button>
     </article>
   );
