@@ -42,35 +42,82 @@ function NorthStarLogo() {
   );
 }
 
-function SecurityConstellation() {
+function AllowanceFlowVisual() {
   return (
-    <div className="relative min-h-[16rem] overflow-hidden rounded-[1.75rem] border border-cyan-300/20 bg-slate-950/70 p-5 shadow-2xl shadow-cyan-950/40 md:min-h-[19rem] md:w-[23rem]">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.08)_1px,transparent_1px)] bg-[size:28px_28px] opacity-70" />
-      <div className="absolute -right-14 -top-14 h-48 w-48 rounded-full border border-violet-400/30 bg-violet-500/10 blur-sm" />
-      <div className="absolute bottom-7 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
-      <div className="absolute left-8 top-9 h-2 w-2 rounded-full bg-cyan-200 shadow-[0_0_18px_4px_rgba(34,211,238,0.45)]" />
-      <div className="absolute right-16 top-14 h-2.5 w-2.5 rounded-full bg-violet-200 shadow-[0_0_20px_5px_rgba(167,139,250,0.45)]" />
-      <div className="absolute bottom-20 right-10 h-2 w-2 rounded-full bg-sky-200 shadow-[0_0_18px_4px_rgba(56,189,248,0.45)]" />
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 360 300" aria-hidden="true">
-        <path d="M70 74 C132 34 198 48 278 86" stroke="#22d3ee" strokeOpacity="0.32" strokeWidth="1.5" />
-        <path d="M68 86 176 154 285 96 308 214" stroke="#a78bfa" strokeOpacity="0.26" strokeWidth="1.5" />
-        <path d="M92 222 176 154 308 214" stroke="#38bdf8" strokeOpacity="0.28" strokeWidth="1.5" />
-        <path d="M180 74 255 154 176 230 101 154Z" stroke="#67e8f9" strokeOpacity="0.18" strokeWidth="1" />
+    <div className="relative min-h-[18rem] overflow-hidden rounded-[1.75rem] border border-cyan-300/20 bg-slate-950/75 p-4 shadow-2xl shadow-cyan-950/40 sm:p-5 md:min-h-[20rem] md:w-[24rem]">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.08)_1px,transparent_1px)] bg-[size:28px_28px] opacity-60" />
+      <div className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-violet-500/20 blur-3xl" />
+      <div className="absolute -bottom-20 left-6 h-52 w-52 rounded-full bg-cyan-400/15 blur-3xl" />
+      <div className="absolute inset-x-6 top-6 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
+
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 384 320" aria-hidden="true">
+        <defs>
+          <linearGradient id="flowLine" x1="48" y1="0" x2="334" y2="0" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#22d3ee" stopOpacity="0.25" />
+            <stop offset="0.5" stopColor="#67e8f9" stopOpacity="0.85" />
+            <stop offset="1" stopColor="#a78bfa" stopOpacity="0.5" />
+          </linearGradient>
+          <filter id="flowGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <path d="M88 88H182" stroke="url(#flowLine)" strokeWidth="2" filter="url(#flowGlow)" />
+        <path d="M174 80 186 88 174 96" fill="none" stroke="#67e8f9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M242 88H302V135" stroke="url(#flowLine)" strokeWidth="2" filter="url(#flowGlow)" />
+        <path d="M294 127 302 139 310 127" fill="none" stroke="#67e8f9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M242 88H302V217" stroke="url(#flowLine)" strokeOpacity="0.75" strokeWidth="2" filter="url(#flowGlow)" />
+        <path d="M294 209 302 221 310 209" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M302 170H302V260H108V128" stroke="url(#flowLine)" strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="5 7" />
+        <path d="M100 136 108 124 116 136" fill="none" stroke="#22d3ee" strokeOpacity="0.8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <div className="relative z-10 flex h-full min-h-[14rem] flex-col justify-between">
+
+      <div className="relative z-10 flex min-h-[16rem] flex-col gap-4">
         <div className="flex items-center justify-between text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-cyan-200/80">
-          <span>Agent Guard</span>
-          <span className="rounded-full border border-emerald-300/30 bg-emerald-400/10 px-2 py-1 text-emerald-200">Sim-safe</span>
+          <span>Allowance Flow</span>
+          <span className="rounded-full border border-cyan-300/30 bg-cyan-400/10 px-2 py-1 text-cyan-100">Policy Check</span>
         </div>
-        <div className="mx-auto grid h-28 w-28 place-items-center rounded-full border border-cyan-300/30 bg-cyan-400/10 shadow-[0_0_55px_rgba(34,211,238,0.18)]">
-          <div className="grid h-20 w-20 place-items-center rounded-[1.4rem] border border-violet-300/35 bg-slate-950/85 rotate-45">
-            <div className="h-9 w-9 rounded-lg border border-cyan-200/70 bg-cyan-300/10 -rotate-45 shadow-[inset_0_0_22px_rgba(34,211,238,0.24)]" />
+
+        <div className="grid flex-1 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+          <div className="rounded-2xl border border-cyan-300/30 bg-slate-900/85 p-3 shadow-[0_0_28px_rgba(34,211,238,0.12)]">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-cyan-200">AI Agent</p>
+            <p className="mt-1 text-xs text-slate-400">Spend request</p>
+          </div>
+
+          <div className="grid h-9 w-9 place-items-center rounded-full border border-cyan-300/30 bg-cyan-400/10 text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.18)]">→</div>
+
+          <div className="rounded-2xl border border-violet-300/35 bg-slate-900/90 p-3 shadow-[0_0_34px_rgba(167,139,250,0.14)]">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-violet-100">Policy Gate</p>
+            <p className="mt-1 text-xs text-slate-400">Limit · expiry · revoke</p>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-2 text-center text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-slate-300">
-          <span className="rounded-xl border border-slate-700/80 bg-slate-900/70 px-2 py-2">Limits</span>
-          <span className="rounded-xl border border-slate-700/80 bg-slate-900/70 px-2 py-2">Revoke</span>
-          <span className="rounded-xl border border-slate-700/80 bg-slate-900/70 px-2 py-2">Audit</span>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-emerald-300/35 bg-emerald-400/10 p-3 shadow-[0_0_26px_rgba(52,211,153,0.10)]">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-emerald-100">Approved</p>
+            <p className="mt-1 text-xs text-emerald-100/70">Within allowance</p>
+          </div>
+          <div className="rounded-2xl border border-rose-300/30 bg-rose-400/10 p-3 shadow-[0_0_26px_rgba(251,113,133,0.10)]">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-rose-100">Blocked</p>
+            <p className="mt-1 text-xs text-rose-100/70">Policy violation</p>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-cyan-300/25 bg-slate-950/80 p-3 shadow-[inset_0_0_24px_rgba(34,211,238,0.08)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-cyan-100">Audit Trail</p>
+              <p className="mt-1 text-xs text-slate-400">Every decision logged for review</p>
+            </div>
+            <div className="flex gap-1.5" aria-hidden="true">
+              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.75)]" />
+              <span className="h-2 w-2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.7)]" />
+              <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.65)]" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -119,7 +166,7 @@ export function Header() {
           </div>
         </div>
 
-        <SecurityConstellation />
+        <AllowanceFlowVisual />
       </div>
     </header>
   );
