@@ -37,6 +37,10 @@ Native subscriptions and allowances need more than a payment button. They need a
 
 NorthStar focuses on that foundation. The allowance engine models the rules that a future Solana program could enforce, while the Solana mapping preview explains how those rules could map to account roles, allowance state, spend attempts, revoke instructions, and event logs. This is especially relevant for agent-controlled recurring or delegated spend, where users need strong boundaries before allowing autonomous actions.
 
+## Canadian context
+
+This demo was built for Superteam Canada. Canadian AI builders, researchers, freelancers, and startups could use allowance controls to safely let AI agents access paid APIs, research tools, automation services, or recurring software services. The value is safer delegated spending: clear limits, expiry, revoke control, and auditability before an AI agent can spend.
+
 ## Architecture
 
 - **Allowance engine**: Evaluates spend attempts against allowance limits, per-transaction caps, allowed categories, expiry, and revocation state.
