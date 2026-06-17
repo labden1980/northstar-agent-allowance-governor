@@ -57,6 +57,7 @@ export function SpendSimulator({ allowances, latestSpendResult, onSimulate }: Sp
       </form>
       {latestSpendResult && (
         <div className={`mt-5 rounded-2xl border p-4 ${latestSpendResult.decision === "approved" ? "border-emerald-400/30 bg-emerald-400/10" : "border-rose-400/30 bg-rose-400/10"}`}>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">Latest Decision</p>
           <div className="flex flex-wrap items-center gap-3"><strong className="text-xl capitalize text-white">{latestSpendResult.decision}</strong><span className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase ${riskStyles[latestSpendResult.risk]}`}>{latestSpendResult.risk} risk</span></div>
           <p className="mt-2 text-sm text-slate-200">{latestSpendResult.reason}</p>
           <dl className="mt-3 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">

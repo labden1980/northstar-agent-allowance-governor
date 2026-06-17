@@ -84,11 +84,15 @@ export default function App() {
           <div>
             <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Policy test</p>
             <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Spend Simulator</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              Run a manual request or use the judge quick actions; the latest decision feedback stays in this simulator area.
+            </p>
           </div>
-          <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] xl:items-start">
+            <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
+            <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} />
+          </div>
         </section>
-
-        <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} />
 
         <section id="audit-trail" className="scroll-mt-24 space-y-4">
           <div>
