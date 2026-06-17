@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AllowanceCard } from "./components/AllowanceCard";
+import { AllowanceManagement } from "./components/AllowanceManagement";
 import { AuditTrail } from "./components/AuditTrail";
 import { CreateAllowanceForm } from "./components/CreateAllowanceForm";
 import { AgentLedgerHero } from "./components/dashboard/AgentLedgerHero";
@@ -60,16 +60,8 @@ export default function App() {
         />
         <DashboardStats allowances={allowances} auditEvents={auditEvents} />
 
-        <section id="allowances" className="scroll-mt-24 space-y-4">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Allowances</p>
-            <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Active Allowances</h2>
-          </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {allowances.map((allowance) => (
-              <AllowanceCard key={allowance.id} allowance={allowance} onRevoke={handleRevokeAllowance} />
-            ))}
-          </div>
+        <section id="allowances" className="scroll-mt-24">
+          <AllowanceManagement allowances={allowances} onRevoke={handleRevokeAllowance} />
         </section>
 
         <section id="create-allowance" className="scroll-mt-24 space-y-4">
