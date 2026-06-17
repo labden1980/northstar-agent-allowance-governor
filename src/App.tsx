@@ -2,9 +2,10 @@ import { useState } from "react";
 import { AllowanceCard } from "./components/AllowanceCard";
 import { AuditTrail } from "./components/AuditTrail";
 import { CreateAllowanceForm } from "./components/CreateAllowanceForm";
+import { AgentLedgerHero } from "./components/dashboard/AgentLedgerHero";
 import { DashboardStats } from "./components/DashboardStats";
 import { DemoGuide } from "./components/DemoGuide";
-import { Header } from "./components/Header";
+import { AppShell } from "./components/layout/AppShell";
 import { QuickDemoActions } from "./components/QuickDemoActions";
 import { SimulationNotice } from "./components/SimulationNotice";
 import { SolanaMappingPanel } from "./components/SolanaMappingPanel";
@@ -44,37 +45,42 @@ export default function App() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.14),_transparent_36%),#020617] px-5 py-8 text-white sm:px-8">
+    <AppShell onResetDemo={handleResetDemo}>
       <div className="mx-auto max-w-7xl space-y-6">
-        <Header />
+        <AgentLedgerHero />
         <SimulationNotice />
-        <DemoGuide />
+        <section id="demo-guide" className="scroll-mt-24">
+          <DemoGuide />
+        </section>
         <SolanaMappingPanel
           allowance={allowances.find((allowance) => allowance.id === "ai-research-agent") ?? allowances[0]}
           auditEvents={auditEvents}
         />
-        <div className="flex justify-end">
-          <button onClick={handleResetDemo} className="rounded-xl border border-cyan-300/30 px-4 py-2 font-semibold text-cyan-100 transition hover:bg-cyan-300/10">
-            Reset demo
-          </button>
-        </div>
         <DashboardStats allowances={allowances} auditEvents={auditEvents} />
         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <section className="space-y-6">
-            <CreateAllowanceForm onCreate={handleCreateAllowance} />
-            <div className="grid gap-4 lg:grid-cols-2">
-              {allowances.map((allowance) => (
-                <AllowanceCard key={allowance.id} allowance={allowance} onRevoke={handleRevokeAllowance} />
-              ))}
+            <div id="create-allowance" className="scroll-mt-24">
+              <CreateAllowanceForm onCreate={handleCreateAllowance} />
             </div>
+            <section id="allowances" className="scroll-mt-24">
+              <div className="grid gap-4 lg:grid-cols-2">
+                {allowances.map((allowance) => (
+                  <AllowanceCard key={allowance.id} allowance={allowance} onRevoke={handleRevokeAllowance} />
+                ))}
+              </div>
+            </section>
           </section>
           <aside className="space-y-6">
             <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} />
-            <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
-            <AuditTrail events={auditEvents} />
+            <div id="spend-simulator" className="scroll-mt-24">
+              <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
+            </div>
+            <section id="audit-trail" className="scroll-mt-24">
+              <AuditTrail events={auditEvents} />
+            </section>
           </aside>
         </div>
       </div>
-    </main>
+    </AppShell>
   );
 }
