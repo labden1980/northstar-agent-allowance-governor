@@ -92,7 +92,7 @@ export function AppShell({ children, onResetDemo }: AppShellProps) {
             </div>
           </header>
 
-          <main id="dashboard" className="space-y-6 px-5 py-6 sm:px-8 lg:py-8">
+          <main className="space-y-6 px-5 py-6 sm:px-8 lg:py-8">
             {children}
           </main>
         </div>
