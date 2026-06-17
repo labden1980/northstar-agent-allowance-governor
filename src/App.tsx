@@ -2,9 +2,10 @@ import { useState } from "react";
 import { AllowanceCard } from "./components/AllowanceCard";
 import { AuditTrail } from "./components/AuditTrail";
 import { CreateAllowanceForm } from "./components/CreateAllowanceForm";
+import { AgentLedgerHero } from "./components/dashboard/AgentLedgerHero";
 import { DashboardStats } from "./components/DashboardStats";
 import { DemoGuide } from "./components/DemoGuide";
-import { Header } from "./components/Header";
+import { AppShell } from "./components/layout/AppShell";
 import { QuickDemoActions } from "./components/QuickDemoActions";
 import { SimulationNotice } from "./components/SimulationNotice";
 import { SolanaMappingPanel } from "./components/SolanaMappingPanel";
@@ -44,37 +45,63 @@ export default function App() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.14),_transparent_36%),#020617] px-5 py-8 text-white sm:px-8">
+    <AppShell onResetDemo={handleResetDemo}>
       <div className="mx-auto max-w-7xl space-y-6">
-        <Header />
+        <section id="dashboard" className="scroll-mt-24">
+          <AgentLedgerHero />
+        </section>
         <SimulationNotice />
-        <DemoGuide />
+        <section id="demo-guide" className="scroll-mt-24">
+          <DemoGuide />
+        </section>
         <SolanaMappingPanel
           allowance={allowances.find((allowance) => allowance.id === "ai-research-agent") ?? allowances[0]}
           auditEvents={auditEvents}
         />
-        <div className="flex justify-end">
-          <button onClick={handleResetDemo} className="rounded-xl border border-cyan-300/30 px-4 py-2 font-semibold text-cyan-100 transition hover:bg-cyan-300/10">
-            Reset demo
-          </button>
-        </div>
         <DashboardStats allowances={allowances} auditEvents={auditEvents} />
-        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <section className="space-y-6">
-            <CreateAllowanceForm onCreate={handleCreateAllowance} />
-            <div className="grid gap-4 lg:grid-cols-2">
-              {allowances.map((allowance) => (
-                <AllowanceCard key={allowance.id} allowance={allowance} onRevoke={handleRevokeAllowance} />
-              ))}
-            </div>
-          </section>
-          <aside className="space-y-6">
-            <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} />
+
+        <section id="allowances" className="scroll-mt-24 space-y-4">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Allowances</p>
+            <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Active Allowances</h2>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {allowances.map((allowance) => (
+              <AllowanceCard key={allowance.id} allowance={allowance} onRevoke={handleRevokeAllowance} />
+            ))}
+          </div>
+        </section>
+
+        <section id="create-allowance" className="scroll-mt-24 space-y-4">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Policy setup</p>
+            <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Create Allowance</h2>
+          </div>
+          <CreateAllowanceForm onCreate={handleCreateAllowance} />
+        </section>
+
+        <section id="spend-simulator" className="scroll-mt-24 space-y-4">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Policy test</p>
+            <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Spend Simulator</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              Run a manual request or use the judge quick actions; the latest decision feedback stays in this simulator area.
+            </p>
+          </div>
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] xl:items-start">
             <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
-            <AuditTrail events={auditEvents} />
-          </aside>
-        </div>
+            <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} />
+          </div>
+        </section>
+
+        <section id="audit-trail" className="scroll-mt-24 space-y-4">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Decision ledger</p>
+            <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Audit Trail</h2>
+          </div>
+          <AuditTrail events={auditEvents} />
+        </section>
       </div>
-    </main>
+    </AppShell>
   );
 }
