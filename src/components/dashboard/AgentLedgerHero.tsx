@@ -12,14 +12,14 @@ export function AgentLedgerHero() {
       <div className="relative grid gap-8 xl:grid-cols-[minmax(0,1fr)_24rem] xl:items-center">
         <div className="max-w-3xl space-y-6">
           <div className="inline-flex rounded-full border border-cyan-200 bg-cyan-50 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-cyan-700">
-            Simulation-safe AgentLedger demo
+            Simulation-safe AI spending control
           </div>
           <div className="space-y-4">
             <h1 id="agentledger-hero-title" className="text-4xl font-black tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
-              Set spending limits before AI agents act
+              Control AI spending before agents act
             </h1>
             <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-              Create allowances, simulate requests, approve or block spending, and keep every decision recorded in a verifiable audit trail.
+              AgentLedger simulates Solana-style allowance policies for AI agents: caps, categories, expiry, revocation, reissue, and audit trail.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -36,7 +36,7 @@ export function AgentLedgerHero() {
         </div>
 
         <aside className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-5 shadow-sm" aria-labelledby="demo-flow-title">
-          <p id="demo-flow-title" className="text-lg font-black text-slate-950">Demo Flow</p>
+          <p id="demo-flow-title" className="text-lg font-black text-slate-950">Judge Flow</p>
           <ol className="mt-5 space-y-3">
             {demoSteps.map(([title, description], index) => (
               <li key={title} className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-3">
