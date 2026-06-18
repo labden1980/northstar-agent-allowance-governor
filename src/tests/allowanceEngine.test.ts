@@ -186,6 +186,7 @@ describe("allowance engine", () => {
       createdAt: testNow,
     });
     expect(result.newAllowance.id).not.toBe(sourceAllowance.id);
+    expect(result.newAllowance.reissuedFromAllowanceId).toBe(sourceAllowance.id);
     expect(result.newAllowance.allowedCategories).not.toBe(sourceAllowance.allowedCategories);
     expect(result.newAllowance.expiryDate).toBe("2026-01-31T00:00:00.000Z");
     expect(getEffectiveStatus(result.newAllowance, testNow)).toBe("active");

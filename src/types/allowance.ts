@@ -14,6 +14,7 @@ export interface Allowance {
   status: AllowanceStatus;
   allowedCategories: SpendCategory[];
   createdAt: string;
+  reissuedFromAllowanceId?: string;
 }
 
 export interface SpendAttempt {

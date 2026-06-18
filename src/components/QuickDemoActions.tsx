@@ -15,6 +15,7 @@ const getDemoAllowance = (allowances: Allowance[]): Allowance | undefined =>
 
 export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemoActionsProps) {
   const selectedAllowance = getDemoAllowance(allowances);
+  const quickActionsDisabled = !selectedAllowance;
 
   const simulateDemoSpend = (amount: number, category: SpendCategory, reason: string) => {
     if (!selectedAllowance) {
@@ -60,7 +61,7 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
     simulateDemoSpend(amount, blockedCategory, "Judge quick test: category outside allowlist.");
   };
 
-  const handleRevokeSelectedAllowance = () => {
+  const handleRevokeTargetAllowance = () => {
     if (!selectedAllowance) {
       return;
     }
@@ -76,19 +77,28 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
       {selectedAllowance ? (
         <>
           <p className="mt-2 text-sm text-slate-400">
-            Running against <span className="font-semibold text-slate-100">{selectedAllowance.agentName}</span> with {formatCurrency(getRemainingAllowance(selectedAllowance))} remaining.
+            Current quick-action target: <span className="font-semibold text-slate-100">{selectedAllowance.agentName}</span> with {formatCurrency(getRemainingAllowance(selectedAllowance))} remaining.
           </p>
+          <p className="mt-2 text-sm text-slate-400">Quick actions always run against the current active demo target.</p>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <button onClick={handleApproveSampleSpend} className="rounded-xl bg-emerald-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300">Approve sample spend</button>
-            <button onClick={handleBlockOverLimitSpend} className="rounded-xl bg-rose-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-rose-300">Block over-limit spend</button>
-            <button onClick={handleBlockWrongCategorySpend} className="rounded-xl border border-amber-300/40 px-4 py-3 font-semibold text-amber-100 transition hover:bg-amber-300/10">Block wrong-category spend</button>
-            <button onClick={handleRevokeSelectedAllowance} className="rounded-xl border border-rose-300/40 px-4 py-3 font-semibold text-rose-100 transition hover:bg-rose-300/10">Revoke selected allowance</button>
+            <button onClick={handleApproveSampleSpend} disabled={quickActionsDisabled} className="rounded-xl bg-emerald-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-50">Approve target spend</button>
+            <button onClick={handleBlockOverLimitSpend} disabled={quickActionsDisabled} className="rounded-xl bg-rose-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-rose-300 disabled:cursor-not-allowed disabled:opacity-50">Block over-limit spend</button>
+            <button onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} className="rounded-xl border border-amber-300/40 px-4 py-3 font-semibold text-amber-100 transition hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50">Block wrong-category spend</button>
+            <button onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} className="rounded-xl border border-rose-300/40 px-4 py-3 font-semibold text-rose-100 transition hover:bg-rose-300/10 disabled:cursor-not-allowed disabled:opacity-50">Revoke target allowance</button>
           </div>
         </>
       ) : (
-        <p className="mt-5 rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-400">
-          No active allowance is available. Reset demo to restore seeded allowances before running quick actions.
-        </p>
+        <>
+          <p className="mt-5 rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-400">
+            No active allowance available for quick demo actions. Reissue a historical allowance or reset the demo.
+          </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <button onClick={handleApproveSampleSpend} disabled={quickActionsDisabled} className="rounded-xl bg-emerald-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-50">Approve target spend</button>
+            <button onClick={handleBlockOverLimitSpend} disabled={quickActionsDisabled} className="rounded-xl bg-rose-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-rose-300 disabled:cursor-not-allowed disabled:opacity-50">Block over-limit spend</button>
+            <button onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} className="rounded-xl border border-amber-300/40 px-4 py-3 font-semibold text-amber-100 transition hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50">Block wrong-category spend</button>
+            <button onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} className="rounded-xl border border-rose-300/40 px-4 py-3 font-semibold text-rose-100 transition hover:bg-rose-300/10 disabled:cursor-not-allowed disabled:opacity-50">Revoke target allowance</button>
+          </div>
+        </>
       )}
     </section>
   );

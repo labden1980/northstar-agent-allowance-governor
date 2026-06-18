@@ -218,14 +218,17 @@ export const reissueAllowance = (
     throw new Error("Active allowances cannot be reissued.");
   }
 
-  const newAllowance = createAllowance({
-    agentName: sourceAllowance.agentName,
-    purpose: sourceAllowance.purpose,
-    weeklyLimit: sourceAllowance.weeklyLimit,
-    maxSingleTransaction: sourceAllowance.maxSingleTransaction,
-    expiryDays,
-    allowedCategories: sourceAllowance.allowedCategories,
-  });
+  const newAllowance: Allowance = {
+    ...createAllowance({
+      agentName: sourceAllowance.agentName,
+      purpose: sourceAllowance.purpose,
+      weeklyLimit: sourceAllowance.weeklyLimit,
+      maxSingleTransaction: sourceAllowance.maxSingleTransaction,
+      expiryDays,
+      allowedCategories: sourceAllowance.allowedCategories,
+    }),
+    reissuedFromAllowanceId: sourceAllowance.id,
+  };
 
   return {
     newAllowance,
