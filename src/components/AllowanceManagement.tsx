@@ -7,6 +7,7 @@ import { AllowanceCard } from "./AllowanceCard";
 interface AllowanceManagementProps {
   allowances: Allowance[];
   onRevoke: (allowance: Allowance, auditEvent: AuditEvent) => void;
+  onReissue: (allowance: Allowance) => void;
 }
 
 type StatusFilter = "all" | AllowanceStatus;
@@ -53,7 +54,7 @@ const getHistoricalEmptyMessage = (statusFilter: StatusFilter): string => {
   return "No inactive or historical allowances yet. Revoked and expired records will appear here for audit review.";
 };
 
-export function AllowanceManagement({ allowances, onRevoke }: AllowanceManagementProps) {
+export function AllowanceManagement({ allowances, onRevoke, onReissue }: AllowanceManagementProps) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const filteredAllowances = useMemo(
@@ -156,14 +157,13 @@ export function AllowanceManagement({ allowances, onRevoke }: AllowanceManagemen
                         <div className="flex flex-col items-start gap-2 md:items-end">
                           <button
                             type="button"
-                            disabled
-                            className="cursor-not-allowed rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-400"
-                            aria-disabled="true"
+                            onClick={() => onReissue(allowance)}
+                            className="rounded-xl border border-cyan-200 bg-white px-4 py-2 text-sm font-bold text-cyan-700 transition hover:border-cyan-300 hover:bg-cyan-50 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
                           >
                             Reissue Allowance
                           </button>
-                          <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-amber-700">
-                            Coming in next batch
+                          <span className="max-w-56 text-xs font-semibold leading-5 text-slate-500 md:text-right">
+                            Creates a new active allowance. Original record stays closed.
                           </span>
                         </div>
                       </div>

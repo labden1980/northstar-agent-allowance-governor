@@ -10,13 +10,14 @@ export function AuditTrail({ events }: AuditTrailProps) {
   const approvedSpends = events.filter((event) => event.type === "spend_approved").length;
   const blockedSpends = events.filter((event) => event.type === "spend_blocked").length;
   const revokedAllowances = events.filter((event) => event.type === "allowance_revoked").length;
+  const reissuedAllowances = events.filter((event) => event.type === "allowance_reissued").length;
 
   return (
     <section className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 shadow-xl shadow-slate-950/30">
       <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Audit Trail</p>
       <h2 className="text-2xl font-bold text-white">Policy events</h2>
       <p className="mt-2 text-sm text-slate-400">
-        {events.length} total audit events · {approvedSpends} approved spends · {blockedSpends} blocked spends · {revokedAllowances} revoked allowances
+        {events.length} total audit events · {approvedSpends} approved spends · {blockedSpends} blocked spends · {revokedAllowances} revoked allowances · {reissuedAllowances} reissued allowances
       </p>
       <div className="mt-5 space-y-3">
         {sortedEvents.length === 0 ? (

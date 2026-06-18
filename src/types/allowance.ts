@@ -37,6 +37,7 @@ export interface AuditEvent {
   allowanceId: string;
   type:
     | "allowance_created"
+    | "allowance_reissued"
     | "spend_approved"
     | "spend_blocked"
     | "allowance_revoked";

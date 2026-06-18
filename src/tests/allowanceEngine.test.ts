@@ -1,10 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   assessRisk,
   createAllowance,
   getEffectiveStatus,
   getRemainingAllowance,
   isExpired,
+  reissueAllowance,
   revokeAllowance,
   simulateSpend,
 } from "../lib/allowanceEngine";
@@ -34,6 +35,10 @@ const makeAttempt = (overrides: Partial<SpendAttempt> = {}): SpendAttempt => ({
   category: "Research",
   timestamp: testNow,
   ...overrides,
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe("allowance engine", () => {
@@ -158,6 +163,62 @@ describe("allowance engine", () => {
     expect(allowance.status).toBe("active");
     expect(result.updatedAllowance).not.toBe(allowance);
     expect(result.updatedAllowance.allowedCategories).not.toBe(allowance.allowedCategories);
+  });
+
+  it("reissues an expired allowance as a new active allowance without mutating the historical record", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(testNow));
+    const sourceAllowance = makeAllowance({
+      expiryDate: "2025-01-01T00:00:00.000Z",
+      spent: 45,
+    });
+
+    const result = reissueAllowance(sourceAllowance);
+
+    expect(result.newAllowance).toMatchObject({
+      agentName: sourceAllowance.agentName,
+      purpose: sourceAllowance.purpose,
+      weeklyLimit: sourceAllowance.weeklyLimit,
+      maxSingleTransaction: sourceAllowance.maxSingleTransaction,
+      spent: 0,
+      status: "active",
+      allowedCategories: sourceAllowance.allowedCategories,
+      createdAt: testNow,
+    });
+    expect(result.newAllowance.id).not.toBe(sourceAllowance.id);
+    expect(result.newAllowance.allowedCategories).not.toBe(sourceAllowance.allowedCategories);
+    expect(result.newAllowance.expiryDate).toBe("2026-01-31T00:00:00.000Z");
+    expect(getEffectiveStatus(result.newAllowance, testNow)).toBe("active");
+    expect(sourceAllowance).toMatchObject({
+      expiryDate: "2025-01-01T00:00:00.000Z",
+      spent: 45,
+      status: "active",
+    });
+    expect(getEffectiveStatus(sourceAllowance, testNow)).toBe("expired");
+    expect(result.auditEvent.type).toBe("allowance_reissued");
+    expect(result.auditEvent.allowanceId).toBe(result.newAllowance.id);
+    expect(result.auditEvent.message).toContain("reissued");
+    expect(result.auditEvent.message).toContain("remains closed and historical");
+  });
+
+  it("reissues a revoked allowance while leaving the revoked source unchanged", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(testNow));
+    const sourceAllowance = makeAllowance({ status: "revoked", spent: 25 });
+
+    const result = reissueAllowance(sourceAllowance);
+
+    expect(result.newAllowance.status).toBe("active");
+    expect(result.newAllowance.spent).toBe(0);
+    expect(getEffectiveStatus(sourceAllowance, testNow)).toBe("revoked");
+    expect(sourceAllowance.status).toBe("revoked");
+  });
+
+  it("does not reissue active allowances", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(testNow));
+
+    expect(() => reissueAllowance(makeAllowance())).toThrow("Active allowances cannot be reissued.");
   });
 
   it("gets active effective status for active unexpired allowance", () => {
