@@ -2,6 +2,8 @@
 
 ## 60–90 second judge walkthrough
 
+AgentLedger is the demo product name; the repository is NorthStar Agent Allowance Governor.
+
 **Opening**
 
 “AgentLedger is an AI spending control demo. It simulates Solana-style allowance policies for AI agents before they act: budget caps, maximum transaction size, allowed categories, expiry, revocation, reissue, and audit trail.”
