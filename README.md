@@ -1,114 +1,126 @@
 # NorthStar Agent Allowance Governor
 
-A simulation-safe Solana allowance/subscription code sample for controlled AI-agent spending.
+AgentLedger is a simulation-safe AI spending control demo for Solana-style allowance policies. It shows how a user could define allowance policy boundaries before an AI agent acts: spending caps, per-request limits, allowed categories, expiry, revocation, audit trail, and audit-safe reissue.
 
-## Problem
+This is not a live wallet or on-chain product yet. It uses local demo state only: no real wallet connection, no real funds, no backend payment rail, and no live Solana transactions.
 
-AI agents need spending permissions to complete useful tasks such as buying research, paying for recurring services, or using paid APIs. Uncontrolled spend is risky because an agent could exceed budget, spend in the wrong category, continue after permission should expire, or act after the user wants access revoked.
+## Project summary
 
-## Solution
+AI agents can become useful economic actors when they can pay for research, APIs, subscriptions, or automation. The risk is that an autonomous agent might spend too much, spend in the wrong category, continue after expiry, or continue after a user intended to revoke permission.
 
-NorthStar Agent Allowance Governor demonstrates a policy-first allowance model. Users define spending limits, a maximum single transaction amount, allowed categories, expiry, revoke control, and an audit trail before an agent can spend. Every spend attempt is evaluated against the allowance rules and recorded as an approved or blocked decision.
+NorthStar Agent Allowance Governor demonstrates a policy-first answer: define the allowance before the agent acts, evaluate every spend attempt against that policy, and record every result in an audit trail. The demo also includes active and historical allowance records so expired records remain closed while reissue creates a clean new active allowance.
 
-## What the demo shows
+## What is implemented
 
-- Create an allowance for an AI agent.
-- Approve a valid spend that fits the allowance policy.
-- Block an over-limit spend.
-- Block a wrong-category spend.
-- Revoke an allowance.
-- Audit every allowance decision.
-- Preview how the model maps to Solana program concepts.
+- **AI spending control** through a local allowance policy engine.
+- **Allowance policy checks** for total budget, maximum single transaction amount, allowed spend categories, expiry, and revocation.
+- **Active and historical records** so closed allowances stay visible without remaining spendable.
+- **Audit-safe reissue** for the expired Legacy Data Agent demo record.
+- **Duplicate reissue guard** that prevents reissue spam and keeps historical records closed.
+- **Spend Simulator** that lists active allowances only.
+- **Quick Demo Actions** that clearly target the current active demo allowance.
+- **Audit Trail** that records approvals, blocks, revocations, resets, and reissue decisions.
+- **Solana mapping preview** that explains how the simulation could map to future Solana account roles, allowance state, instructions, and event logs.
 
-## Current scope
+## Simulation-only scope
 
-This project is intentionally scoped for a safe bounty/demo submission:
+This project is intentionally safe for judging and local review:
 
-- Simulation-only.
-- No live Solana transactions.
 - No wallet connection.
-- No backend or database.
+- No real funds.
+- No live Solana transactions.
+- No on-chain account creation.
 - No production payment processing.
-- Solana mapping is preview/foundation only.
+- No backend or database.
+- Solana references are a future mapping preview, not live wallet or on-chain behavior.
 
-## Why this fits the Solana Native Subscriptions & Allowances bounty
+## Judge demo flow
 
-Native subscriptions and allowances need more than a payment button. They need a clear policy and account-model foundation for delegated or recurring spend: who authorizes the spend, what limits apply, which categories are valid, when permissions expire, how revocation works, and how decisions are auditable.
+Use this path for the clearest review:
 
-NorthStar focuses on that foundation. The allowance engine models the rules that a future Solana program could enforce, while the Solana mapping preview explains how those rules could map to account roles, allowance state, spend attempts, revoke instructions, and event logs. This is especially relevant for agent-controlled recurring or delegated spend, where users need strong boundaries before allowing autonomous actions.
+1. **Reset Demo** to start from the known seeded state.
+2. **Review active allowances** and inspect the allowance policy fields: caps, categories, expiry, and status.
+3. **Run quick actions**:
+   - Approve a valid sample spend.
+   - Block an over-limit spend.
+   - Block a wrong-category spend.
+   - Revoke the active demo allowance and confirm spend is blocked.
+4. **Check the Audit Trail** and confirm each policy decision is recorded.
+5. **Review the expired Legacy Data Agent** in historical records.
+6. **Reissue Legacy Data Agent** and confirm a new active allowance appears.
+7. **Confirm the old Legacy Data Agent record says Already Reissued** and remains closed.
+8. **Confirm Spend Simulator and Quick Demo Actions use active records only** after reissue.
+9. **Open the Solana mapping preview** to see the future Solana-native allowance concept.
 
-## Canadian context
+## Expected demo results
 
-This demo was built for Superteam Canada. Canadian AI builders, researchers, freelancers, and startups could use allowance controls to safely let AI agents access paid APIs, research tools, automation services, or recurring software services. The value is safer delegated spending: clear limits, expiry, revoke control, and auditability before an AI agent can spend.
+- Valid spend inside policy is approved.
+- Over-limit spend is blocked before the agent can act.
+- Wrong-category spend is blocked before the agent can act.
+- Revoked allowance blocks future spend attempts.
+- Expired historical allowance remains closed.
+- Reissued allowance creates a new active record while preserving the old historical record.
+- Duplicate reissue guard prevents repeated reissue spam.
+- Audit trail shows the sequence of allowance decisions.
 
-## Architecture
+## Local setup and commands
 
-- **Allowance engine**: Evaluates spend attempts against allowance limits, per-transaction caps, allowed categories, expiry, and revocation state.
-- **React UI**: Provides a judge-friendly demo for reviewing seeded allowances, creating allowances, simulating spend decisions, revoking access, and resetting the demo.
-- **Audit trail**: Records every meaningful allowance decision so approvals, blocks, revocations, and demo actions are transparent.
-- **Solana mapping layer**: Converts the simulation model into preview concepts for future Solana account roles, allowance state, instruction previews, and audit/event mapping.
-- **Tests**: Cover the core policy engine, Solana mapping utilities, and a server-render smoke check for the UI.
-
-## File structure
-
-Key files:
-
-- `src/lib/allowanceEngine.ts` — core allowance policy evaluation and audit event helpers.
-- `src/types/allowance.ts` — allowance, spend request, decision, and audit types.
-- `src/lib/solanaMapping.ts` — simulation-to-Solana mapping utilities.
-- `src/types/solanaMapping.ts` — Solana mapping preview types.
-- `src/components/SolanaMappingPanel.tsx` — in-app Solana mapping preview panel.
-- `src/tests/allowanceEngine.test.ts` — allowance engine tests.
-- `src/tests/solanaMapping.test.ts` — Solana mapping tests.
-- `src/tests/basic.test.ts` — server-render smoke UI test.
-
-## Demo flow for judges
-
-1. Open the app.
-2. Review **AI Research Agent**.
-3. Click **Approve sample spend**.
-4. Click **Block over-limit spend**.
-5. Click **Block wrong-category spend**.
-6. Click **Revoke selected allowance**.
-7. Review **Audit Trail**.
-8. Click **Reset demo**.
-
-## Local setup
+Install dependencies:
 
 ```bash
 npm install
-npm run test
-npm run build
+```
+
+Run the local development server:
+
+```bash
 npm run dev
+```
+
+Run tests:
+
+```bash
+npm run test
+```
+
+Build the app:
+
+```bash
+npm run build
 ```
 
 After `npm run dev`, open the local Vite URL shown in the terminal.
 
-## Test status
+## Technical architecture
 
-The current test suite covers:
+- **`src/lib/allowanceEngine.ts`** — evaluates spend attempts against allowance policy and creates audit-safe decisions.
+- **`src/types/allowance.ts`** — defines allowance, spend request, decision, lifecycle, and audit types.
+- **`src/lib/seedData.ts`** — provides demo allowances, including the expired Legacy Data Agent record.
+- **React UI components** — present active/historical allowance management, spend simulation, quick demo actions, audit trail, demo guide, and simulation notices.
+- **`src/lib/solanaMapping.ts`** — converts local allowance concepts into preview Solana account, instruction, and event-log concepts.
+- **Tests** — cover the policy engine, Solana mapping utilities, and React server-render smoke behavior.
 
-- Allowance engine approval and blocking behavior.
-- Solana mapping utilities for account roles, instruction previews, and audit record mapping.
-- Server-render smoke coverage for the main React UI.
+## Future Solana mapping preview
 
-Run the test suite with:
+The Solana section is intentionally a preview. It describes how this model could become a Solana-native allowance system later:
 
-```bash
-npm run test
-```
+- A user authority could authorize an allowance.
+- An agent identity could request spend within that allowance.
+- Program-owned allowance state could store caps, categories, expiry, and status.
+- Revoke and reissue could become explicit instructions.
+- Audit events could map to on-chain logs or indexable events.
 
-## Future work
+None of that is live in this repository today. The current project is a frontend and local simulation of the allowance concept.
 
-Realistic next steps for a production-oriented version:
+## 60–90 second demo narration
 
-- Real Solana program.
-- Wallet adapter.
-- SPL token/USDG support.
-- PDA allowance state account.
-- On-chain revoke instruction.
-- Event logs.
-- Backend indexer if needed.
+1. “AgentLedger is an AI spending control demo. Before an AI agent acts, a user defines an allowance policy: budget, max transaction size, allowed categories, expiry, and revocation.”
+2. “I start by resetting the demo, then review the active allowances. The Spend Simulator and Quick Demo Actions only target active records.”
+3. “A valid research spend is approved. An over-limit spend and a wrong-category spend are blocked. Each result is written to the audit trail.”
+4. “Next, I revoke the active allowance and show that future spend is blocked.”
+5. “The historical section shows an expired Legacy Data Agent. Historical records remain closed, but I can perform an audit-safe reissue.”
+6. “Reissue creates a new active Legacy Data Agent allowance. The old record stays historical and now says Already Reissued, so duplicate reissue spam is prevented.”
+7. “Finally, the Solana panel is a future mapping preview only. There is no wallet connection, no real funds, and no live Solana transaction in this demo.”
 
 ## License
 
