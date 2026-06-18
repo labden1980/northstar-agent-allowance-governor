@@ -16,10 +16,10 @@ describe("main UI", () => {
     expect(html).toContain("Reset Demo");
     expect(html).toContain("Spend Simulator");
     expect(html).toContain("Audit Trail");
-    expect(html).toContain("Solana Mapping Preview");
-    expect(html).toContain("simulation-to-Solana design map");
+    expect(html).toContain("Future Solana Integration Preview");
+    expect(html).toContain("Preview only — not clickable yet.");
     expect(html).toContain("Allowance state account");
     expect(html).toContain("Revoke instruction");
-    expect(html).toContain("No live wallet connection");
+    expect(html).toContain("No wallet connection, no on-chain account creation, and no live Solana transactions.");
   });
 });
