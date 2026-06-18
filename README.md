@@ -124,6 +124,10 @@ None of that is live in this repository today. The current project is a frontend
 6. “Reissue creates a new active Legacy Data Agent allowance. The old record stays historical and now says Already Reissued, so duplicate reissue spam is prevented.”
 7. “Finally, the Solana panel is a future mapping preview only. There is no wallet connection, no real funds, and no live Solana transaction in this demo.”
 
+## Final submission materials
+
+See [`SUBMISSION.md`](./SUBMISSION.md) for the Superteam submission copy, judge checklist, link placeholders, and final 60–90 second demo narration.
+
 ## License
 
 MIT
