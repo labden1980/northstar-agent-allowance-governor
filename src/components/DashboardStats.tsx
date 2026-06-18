@@ -7,6 +7,22 @@ interface DashboardStatsProps {
   auditEvents: AuditEvent[];
 }
 
+interface StatCardProps {
+  label: string;
+  value: string;
+}
+
+function StatCard({ label, value }: StatCardProps) {
+  return (
+    <article className="flex min-h-36 flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/75 p-5 shadow-lg shadow-slate-950/30">
+      <p className="min-h-10 text-sm uppercase leading-5 tracking-[0.16em] text-slate-500 sm:whitespace-nowrap xl:whitespace-normal 2xl:whitespace-nowrap">
+        {label}
+      </p>
+      <p className="mt-5 text-3xl font-bold leading-none text-white">{value}</p>
+    </article>
+  );
+}
+
 export function DashboardStats({ allowances, auditEvents }: DashboardStatsProps) {
   const activeAllowances = allowances.filter((allowance) => getEffectiveStatus(allowance) === "active").length;
   const totalSpent = allowances.reduce((sum, allowance) => sum + allowance.spent, 0);
@@ -23,10 +39,7 @@ export function DashboardStats({ allowances, auditEvents }: DashboardStatsProps)
   return (
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
       {stats.map(([label, value]) => (
-        <article key={label} className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 shadow-lg shadow-slate-950/30">
-          <p className="text-sm uppercase tracking-[0.18em] text-slate-500">{label}</p>
-          <p className="mt-3 text-3xl font-bold text-white">{value}</p>
-        </article>
+        <StatCard key={label} label={label} value={value} />
       ))}
     </section>
   );
