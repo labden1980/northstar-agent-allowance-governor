@@ -70,6 +70,7 @@ export function AllowanceManagement({ allowances, onRevoke, onReissue }: Allowan
   const historicalAllowances = filteredAllowances.filter((allowance) => getEffectiveStatus(allowance) !== "active");
   const showActiveSection = statusFilter === "all" || statusFilter === "active";
   const showHistoricalSection = statusFilter === "all" || statusFilter === "revoked" || statusFilter === "expired";
+  const reissuedSourceIds = new Set(allowances.map((allowance) => allowance.reissuedFromAllowanceId).filter(Boolean));
 
   return (
     <section className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
@@ -139,6 +140,7 @@ export function AllowanceManagement({ allowances, onRevoke, onReissue }: Allowan
               <div className="grid gap-3">
                 {historicalAllowances.map((allowance) => {
                   const effectiveStatus = getEffectiveStatus(allowance);
+                  const hasReplacementAllowance = reissuedSourceIds.has(allowance.id);
                   return (
                     <article key={allowance.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
                       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -158,12 +160,15 @@ export function AllowanceManagement({ allowances, onRevoke, onReissue }: Allowan
                           <button
                             type="button"
                             onClick={() => onReissue(allowance)}
-                            className="rounded-xl border border-cyan-200 bg-white px-4 py-2 text-sm font-bold text-cyan-700 transition hover:border-cyan-300 hover:bg-cyan-50 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
+                            disabled={hasReplacementAllowance}
+                            className="rounded-xl border border-cyan-200 bg-white px-4 py-2 text-sm font-bold text-cyan-700 transition hover:border-cyan-300 hover:bg-cyan-50 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
                           >
-                            Reissue Allowance
+                            {hasReplacementAllowance ? "Already Reissued" : "Reissue Allowance"}
                           </button>
                           <span className="max-w-56 text-xs font-semibold leading-5 text-slate-500 md:text-right">
-                            Creates a new active allowance. Original record stays closed.
+                            {hasReplacementAllowance
+                              ? "A replacement allowance already exists. Original record stays closed."
+                              : "Creates a new active allowance. Original record stays closed."}
                           </span>
                         </div>
                       </div>

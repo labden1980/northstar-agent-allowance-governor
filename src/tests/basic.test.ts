@@ -2,6 +2,8 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import App from "../App";
+import { AllowanceManagement } from "../components/AllowanceManagement";
+import { QuickDemoActions } from "../components/QuickDemoActions";
 import { SpendSimulator } from "../components/SpendSimulator";
 import { getEffectiveStatus } from "../lib/allowanceEngine";
 import { sampleAllowances } from "../lib/seedData";
@@ -17,7 +19,9 @@ describe("main UI", () => {
     expect(html).toContain("Historical demo record for expired allowance review");
     expect(html).toContain("Expired Feb 15, 2024");
     expect(html).toContain("Judge Demo Flow");
-    expect(html).toContain("Approve sample spend");
+    expect(html).toContain("Current quick-action target: ");
+    expect(html).toContain("Quick actions always run against the current active demo target.");
+    expect(html).toContain("Approve target spend");
     expect(html).toContain("Block over-limit spend");
     expect(html).toContain("Reset Demo");
     expect(html).toContain("Spend Simulator");
@@ -64,6 +68,70 @@ describe("spend simulator", () => {
     );
 
     expect(html).toContain("No active allowances available. Reset demo or reissue a historical allowance to continue.");
+    expect(html).toContain('disabled=""');
+  });
+});
+
+describe("quick demo actions", () => {
+  it("shows the current active target with clear target-specific button wording", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(QuickDemoActions, {
+        allowances: sampleAllowances,
+        onSimulate: () => undefined,
+        onRevoke: () => undefined,
+      }),
+    );
+
+    expect(html).toContain("Current quick-action target: ");
+    expect(html).toContain("AI Research Agent");
+    expect(html).toContain("Quick actions always run against the current active demo target.");
+    expect(html).toContain("Approve target spend");
+    expect(html).toContain("Revoke target allowance");
+    expect(html).not.toContain("Revoke selected allowance");
+  });
+
+  it("shows an empty state and disabled quick action buttons when no active target exists", () => {
+    const closedAllowances = sampleAllowances.map((allowance) => ({
+      ...allowance,
+      status: "revoked" as const,
+    }));
+
+    const html = renderToStaticMarkup(
+      React.createElement(QuickDemoActions, {
+        allowances: closedAllowances,
+        onSimulate: () => undefined,
+        onRevoke: () => undefined,
+      }),
+    );
+
+    expect(html).toContain("No active allowance available for quick demo actions. Reissue a historical allowance or reset the demo.");
+    expect(html).toContain("Approve target spend");
+    expect(html).toContain('disabled=""');
+  });
+});
+
+describe("allowance management reissue guard", () => {
+  it("disables reissue for a historical source that already has a replacement allowance", () => {
+    const reissuedAllowances = [
+      {
+        ...sampleAllowances[0],
+        id: "legacy-replacement",
+        agentName: "Legacy Data Agent",
+        reissuedFromAllowanceId: "legacy-data-agent",
+      },
+      ...sampleAllowances,
+    ];
+
+    const html = renderToStaticMarkup(
+      React.createElement(AllowanceManagement, {
+        allowances: reissuedAllowances,
+        onRevoke: () => undefined,
+        onReissue: () => undefined,
+      }),
+    );
+
+    expect(html).toContain("Already Reissued");
+    expect(html).toContain("A replacement allowance already exists. Original record stays closed.");
     expect(html).toContain('disabled=""');
   });
 });
