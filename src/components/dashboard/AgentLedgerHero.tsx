@@ -1,8 +1,8 @@
 const demoSteps = [
-  ["Reset demo", "Start from seeded allowances"],
-  ["Run quick actions", "Approve and block spend attempts"],
-  ["Reissue Legacy Data Agent", "Create a new active allowance while the old record stays closed"],
-  ["Review audit trail", "See policy decisions recorded"],
+  ["Reset Demo", "Start from a clean seeded state"],
+  ["Test Policy Controls", "Approve, block, and revoke spend"],
+  ["Review Historical Records", "Confirm closed allowances stay audit-safe"],
+  ["Check Audit Trail", "See every policy decision recorded"],
 ];
 
 export function AgentLedgerHero() {
