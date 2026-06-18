@@ -2,6 +2,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import App from "../App";
+import { SpendSimulator } from "../components/SpendSimulator";
 import { getEffectiveStatus } from "../lib/allowanceEngine";
 import { sampleAllowances } from "../lib/seedData";
 
@@ -31,6 +32,41 @@ describe("main UI", () => {
   });
 });
 
+
+describe("spend simulator", () => {
+  it("lists only active allowances and keeps historical allowances out of normal simulation", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(SpendSimulator, {
+        allowances: sampleAllowances,
+        latestSpendResult: null,
+        onSimulate: () => undefined,
+      }),
+    );
+
+    expect(html).toContain("AI Research Agent");
+    expect(html).toContain("Automation Ops Agent");
+    expect(html).not.toContain("Legacy Data Agent");
+    expect(html).not.toContain("No active allowances available");
+  });
+
+  it("shows an empty state and disables manual simulation when no active allowances exist", () => {
+    const closedAllowances = sampleAllowances.map((allowance) => ({
+      ...allowance,
+      status: "revoked" as const,
+    }));
+
+    const html = renderToStaticMarkup(
+      React.createElement(SpendSimulator, {
+        allowances: closedAllowances,
+        latestSpendResult: null,
+        onSimulate: () => undefined,
+      }),
+    );
+
+    expect(html).toContain("No active allowances available. Reset demo or reissue a historical allowance to continue.");
+    expect(html).toContain('disabled=""');
+  });
+});
 
 describe("seed demo allowances", () => {
   it("includes active demo allowances plus a safe expired historical record", () => {
