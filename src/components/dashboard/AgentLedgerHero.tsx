@@ -1,8 +1,8 @@
 const demoSteps = [
-  ["Create an allowance", "Set a spending limit for an agent"],
-  ["Run a spend request", "Simulate an agent spending request"],
-  ["AgentLedger decides", "Approve or block in real-time"],
-  ["Review the audit trail", "See every decision recorded"],
+  ["Reset Demo", "Start from a clean seeded state"],
+  ["Test Policy Controls", "Approve, block, and revoke spend"],
+  ["Review Historical Records", "Confirm closed allowances stay audit-safe"],
+  ["Check Audit Trail", "See every policy decision recorded"],
 ];
 
 export function AgentLedgerHero() {

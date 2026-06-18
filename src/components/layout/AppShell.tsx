@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { LogoMark } from "../LogoMark";
 
 type AppShellProps = {
   children: ReactNode;
@@ -20,10 +21,13 @@ export function AppShell({ children, onResetDemo }: AppShellProps) {
     <div className="min-h-screen bg-slate-100 text-slate-950">
       <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col lg:flex-row">
         <aside className="border-b border-slate-200 bg-slate-950 px-5 py-5 text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-80 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r lg:border-slate-800 lg:px-7 lg:py-7">
-          <div className="flex items-start justify-between gap-4 lg:block">
-            <div className="min-w-0">
-              <p className="break-words text-2xl font-black tracking-[-0.04em] text-white">AgentLedger</p>
-              <p className="mt-1 text-sm font-semibold text-cyan-200">AI Spending Control</p>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <LogoMark className="h-11 w-11 shrink-0" />
+              <div className="min-w-0">
+                <p className="break-words text-2xl font-black tracking-[-0.04em] text-white">AgentLedger</p>
+                <p className="mt-1 text-sm font-semibold text-cyan-200">AI Spending Control</p>
+              </div>
             </div>
             <div className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-cyan-100 lg:hidden">
               Demo Mode
