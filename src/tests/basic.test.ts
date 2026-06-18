@@ -47,7 +47,7 @@ describe("seed demo allowances", () => {
       allowedCategories: ["Storage", "API"],
       status: "active",
       createdAt: "2024-01-15T00:00:00.000Z",
-      expiryDate: "2024-02-15T00:00:00.000Z",
+      expiryDate: "2024-02-15T12:00:00.000Z",
     });
     expect(expiredAllowance && getEffectiveStatus(expiredAllowance)).toBe("expired");
   });
