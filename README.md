@@ -4,6 +4,8 @@ AgentLedger is a simulation-safe AI spending control demo for Solana-style allow
 
 This is not a live wallet or on-chain product yet. It uses local demo state only: no real wallet connection, no real funds, no backend payment rail, and no live Solana transactions.
 
+Naming note: AgentLedger is the product/demo name used in the app UI. NorthStar Agent Allowance Governor is the repository/project name for this submission.
+
 ## Project summary
 
 AI agents can become useful economic actors when they can pay for research, APIs, subscriptions, or automation. The risk is that an autonomous agent might spend too much, spend in the wrong category, continue after expiry, or continue after a user intended to revoke permission.
