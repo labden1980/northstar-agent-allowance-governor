@@ -207,3 +207,33 @@ export const revokeAllowance = (
     }),
   };
 };
+
+export const reissueAllowance = (
+  sourceAllowance: Allowance,
+  expiryDays = 30,
+): { newAllowance: Allowance; auditEvent: AuditEvent } => {
+  const effectiveStatus = getEffectiveStatus(sourceAllowance);
+
+  if (effectiveStatus === "active") {
+    throw new Error("Active allowances cannot be reissued.");
+  }
+
+  const newAllowance = createAllowance({
+    agentName: sourceAllowance.agentName,
+    purpose: sourceAllowance.purpose,
+    weeklyLimit: sourceAllowance.weeklyLimit,
+    maxSingleTransaction: sourceAllowance.maxSingleTransaction,
+    expiryDays,
+    allowedCategories: sourceAllowance.allowedCategories,
+  });
+
+  return {
+    newAllowance,
+    auditEvent: createAuditEvent({
+      allowanceId: newAllowance.id,
+      type: "allowance_reissued",
+      message: `Allowance reissued for ${sourceAllowance.agentName}; original ${effectiveStatus} record ${sourceAllowance.id} remains closed and historical.`,
+      timestamp: newAllowance.createdAt,
+    }),
+  };
+};

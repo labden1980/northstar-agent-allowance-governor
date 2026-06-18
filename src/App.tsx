@@ -10,6 +10,7 @@ import { QuickDemoActions } from "./components/QuickDemoActions";
 import { SimulationNotice } from "./components/SimulationNotice";
 import { SolanaMappingPanel } from "./components/SolanaMappingPanel";
 import { SpendSimulator } from "./components/SpendSimulator";
+import { reissueAllowance } from "./lib/allowanceEngine";
 import { sampleAllowances } from "./lib/seedData";
 import type { Allowance, AuditEvent, SpendResult } from "./types/allowance";
 
@@ -30,6 +31,12 @@ export default function App() {
   const handleRevokeAllowance = (updatedAllowance: Allowance, auditEvent: AuditEvent) => {
     setAllowances((current) => current.map((allowance) => (allowance.id === updatedAllowance.id ? updatedAllowance : allowance)));
     appendAuditEvent(auditEvent);
+  };
+
+  const handleReissueAllowance = (sourceAllowance: Allowance) => {
+    const result = reissueAllowance(sourceAllowance);
+    setAllowances((current) => [result.newAllowance, ...current]);
+    appendAuditEvent(result.auditEvent);
   };
 
   const handleSpendSimulation = (result: SpendResult) => {
@@ -61,7 +68,7 @@ export default function App() {
         <DashboardStats allowances={allowances} auditEvents={auditEvents} />
 
         <section id="allowances" className="scroll-mt-24">
-          <AllowanceManagement allowances={allowances} onRevoke={handleRevokeAllowance} />
+          <AllowanceManagement allowances={allowances} onRevoke={handleRevokeAllowance} onReissue={handleReissueAllowance} />
         </section>
 
         <section id="create-allowance" className="scroll-mt-24 space-y-4">
