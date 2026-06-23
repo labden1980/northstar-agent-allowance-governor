@@ -1,5 +1,6 @@
 import { getEffectiveStatus, getRemainingAllowance, revokeAllowance, simulateSpend } from "../lib/allowanceEngine";
 import { formatCurrency } from "../lib/formatters";
+import { QuickActionDecisionEvidence, type QuickActionDecisionEvidenceState } from "./QuickActionDecisionEvidence";
 import type { Allowance, AuditEvent, SpendCategory, SpendResult } from "../types/allowance";
 
 const allCategories: SpendCategory[] = ["Research", "API", "Storage", "Automation", "Other"];
@@ -8,12 +9,14 @@ interface QuickDemoActionsProps {
   allowances: Allowance[];
   onSimulate: (result: SpendResult) => void;
   onRevoke: (allowance: Allowance, auditEvent: AuditEvent) => void;
+  evidence: QuickActionDecisionEvidenceState | null;
+  onEvidenceChange: (evidence: QuickActionDecisionEvidenceState) => void;
 }
 
 const getDemoAllowance = (allowances: Allowance[]): Allowance | undefined =>
   allowances.find((allowance) => getEffectiveStatus(allowance) === "active");
 
-export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemoActionsProps) {
+export function QuickDemoActions({ allowances, onSimulate, onRevoke, evidence, onEvidenceChange }: QuickDemoActionsProps) {
   const selectedAllowance = getDemoAllowance(allowances);
   const quickActionsDisabled = !selectedAllowance;
 
@@ -22,15 +25,32 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
       return;
     }
 
-    onSimulate(
-      simulateSpend(selectedAllowance, {
-        allowanceId: selectedAllowance.id,
-        amount,
-        category,
-        reason,
-        timestamp: new Date().toISOString(),
-      }),
-    );
+    const result = simulateSpend(selectedAllowance, {
+      allowanceId: selectedAllowance.id,
+      amount,
+      category,
+      reason,
+      timestamp: new Date().toISOString(),
+    });
+
+    onSimulate(result);
+    onEvidenceChange({
+      kind: "spend",
+      decision: result.decision,
+      agentName: selectedAllowance.agentName,
+      amount,
+      category,
+      maxSingleTransaction: selectedAllowance.maxSingleTransaction,
+      allowedCategories: [...selectedAllowance.allowedCategories],
+      reason:
+        result.decision === "approved"
+          ? "Request fits the active allowance policy."
+          : amount > selectedAllowance.maxSingleTransaction
+            ? `Request exceeds the maximum single-spend limit by ${formatCurrency(amount - selectedAllowance.maxSingleTransaction)}.`
+            : !selectedAllowance.allowedCategories.includes(category)
+              ? `${category} is not an approved spending category.`
+              : result.reason.replace(/^Spend blocked because /, "").replace(/\.$/, "."),
+    });
   };
 
   const handleApproveSampleSpend = () => {
@@ -38,7 +58,7 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
       return;
     }
 
-    const validAmount = Math.max(1, Math.min(25, selectedAllowance.maxSingleTransaction, getRemainingAllowance(selectedAllowance)));
+    const validAmount = Math.max(1, Math.min(50, selectedAllowance.maxSingleTransaction, getRemainingAllowance(selectedAllowance)));
     simulateDemoSpend(validAmount, selectedAllowance.allowedCategories[0] ?? "Other", "Judge quick test: valid policy-compliant spend.");
   };
 
@@ -47,7 +67,7 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
       return;
     }
 
-    const overLimitAmount = getRemainingAllowance(selectedAllowance) + 1;
+    const overLimitAmount = selectedAllowance.maxSingleTransaction + 50;
     simulateDemoSpend(overLimitAmount, selectedAllowance.allowedCategories[0] ?? "Other", "Judge quick test: over remaining allowance.");
   };
 
@@ -57,7 +77,7 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
     }
 
     const blockedCategory = allCategories.find((category) => !selectedAllowance.allowedCategories.includes(category)) ?? "Other";
-    const amount = Math.max(1, Math.min(10, selectedAllowance.maxSingleTransaction, getRemainingAllowance(selectedAllowance)));
+    const amount = Math.max(1, Math.min(50, selectedAllowance.maxSingleTransaction, getRemainingAllowance(selectedAllowance)));
     simulateDemoSpend(amount, blockedCategory, "Judge quick test: category outside allowlist.");
   };
 
@@ -68,6 +88,12 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
 
     const result = revokeAllowance(selectedAllowance);
     onRevoke(result.updatedAllowance, result.auditEvent);
+    onEvidenceChange({
+      kind: "revocation",
+      agentName: selectedAllowance.agentName,
+      status: result.updatedAllowance.status,
+      reason: "Future spending attempts for this allowance are blocked.",
+    });
   };
 
   return (
@@ -86,6 +112,7 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke }: QuickDemo
             <button onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} className="rounded-xl border border-amber-300/40 px-4 py-3 font-semibold text-amber-100 transition hover:bg-amber-300/10 disabled:cursor-not-allowed disabled:opacity-50">Block wrong-category spend</button>
             <button onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} className="rounded-xl border border-rose-300/40 px-4 py-3 font-semibold text-rose-100 transition hover:bg-rose-300/10 disabled:cursor-not-allowed disabled:opacity-50">Revoke target allowance</button>
           </div>
+          <QuickActionDecisionEvidence evidence={evidence} />
         </>
       ) : (
         <>
