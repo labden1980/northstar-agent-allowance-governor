@@ -89,9 +89,45 @@ describe("quick demo actions", () => {
     expect(html).toContain("AI Research Agent");
     expect(html).toContain("Quick actions always run against the current active demo target.");
     expect(html).toContain("Approve target spend");
+    expect(html).toContain("Preset: $50 Research request");
+    expect(html).toContain("Policy: max single spend $75");
+    expect(html).toContain("Expected: Approved");
+    expect(html).toContain("Block over-limit spend");
+    expect(html).toContain("Preset: $125 Research request");
+    expect(html).toContain("Expected: Blocked");
+    expect(html).toContain("Block wrong-category spend");
+    expect(html).toContain("Preset: $50 Automation request");
+    expect(html).toContain("Policy: Research, API, Storage only");
     expect(html).toContain("Revoke target allowance");
+    expect(html).toContain("Preset: revoke AI Research Agent");
+    expect(html).toContain("Expected: future spend attempts blocked");
     expect(html).not.toContain("Decision Evidence");
     expect(html).not.toContain("Revoke selected allowance");
+  });
+
+
+  it("updates scenario previews to the next active target after the first target is revoked", () => {
+    const firstTargetRevoked = sampleAllowances.map((allowance) =>
+      allowance.id === "ai-research-agent" ? { ...allowance, status: "revoked" as const } : allowance,
+    );
+
+    const html = renderToStaticMarkup(
+      React.createElement(QuickDemoActions, {
+        allowances: firstTargetRevoked,
+        onSimulate: () => undefined,
+        onRevoke: () => undefined,
+        evidence: null,
+        onEvidenceChange: () => undefined,
+      }),
+    );
+
+    expect(html).toContain("Automation Ops Agent");
+    expect(html).toContain("Preset: $50 Automation request");
+    expect(html).toContain("Policy: max single spend $125");
+    expect(html).toContain("Preset: $175 Automation request");
+    expect(html).toContain("Preset: $50 Research request");
+    expect(html).toContain("Policy: Automation, API, Other only");
+    expect(html).toContain("Preset: revoke Automation Ops Agent");
   });
 
   it("shows an empty state and disabled quick action buttons when no active target exists", () => {
