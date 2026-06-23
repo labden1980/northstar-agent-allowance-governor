@@ -59,9 +59,9 @@ export function SpendSimulator({ allowances, latestSpendResult, onSimulate }: Sp
 
   return (
     <section className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 shadow-xl shadow-slate-950/30">
-      <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Spend Simulator</p>
-      <h2 className="text-2xl font-bold text-white">Test an agent spend</h2>
-      <p className="mt-2 text-sm text-slate-400">Approved and blocked decisions come from the shared policy engine, not UI-only validation.</p>
+      <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Manual Policy Test</p>
+      <h2 className="text-2xl font-bold text-white">Test a specific agent request</h2>
+      <p className="mt-2 text-sm text-slate-400">Choose an active allowance, enter an amount, category, and reason, then let AgentLedger evaluate this manual request against the policy.</p>
       <form onSubmit={handleSubmit} className="mt-5 grid gap-4">
         {!activeAllowances.length && <p className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-sm text-amber-100">No active allowances available. Reset demo or reissue a historical allowance to continue.</p>}
         <label className="space-y-2 text-sm text-slate-300">Allowance<select value={allowanceId} onChange={(e) => setAllowanceId(e.target.value)} disabled={!activeAllowances.length} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-60"><option value="">Select allowance</option>{activeAllowances.map((allowance) => <option key={allowance.id} value={allowance.id}>{allowance.agentName}</option>)}</select></label>
@@ -71,7 +71,7 @@ export function SpendSimulator({ allowances, latestSpendResult, onSimulate }: Sp
         </div>
         <label className="space-y-2 text-sm text-slate-300">Reason<input value={reason} onChange={(e) => setReason(e.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-cyan-400" /></label>
         {error && <p className="rounded-xl border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-sm text-rose-200">{error}</p>}
-        <button disabled={!activeAllowances.length} className="rounded-xl bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400">Simulate spend</button>
+        <button disabled={!activeAllowances.length} className="rounded-xl bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400">Simulate manual agent request</button>
       </form>
       {latestSpendResult && (
         <div className={`mt-5 rounded-2xl border p-4 ${latestSpendResult.decision === "approved" ? "border-emerald-400/30 bg-emerald-400/10" : "border-rose-400/30 bg-rose-400/10"}`}>

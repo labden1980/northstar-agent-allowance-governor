@@ -48,7 +48,7 @@ function ScenarioPreviewButton({ title, onClick, disabled, variant, children }: 
       className={`rounded-xl px-4 py-3 text-left transition disabled:cursor-not-allowed disabled:opacity-50 ${buttonStyles[variant]}`}
     >
       <span className="block font-semibold">{title}</span>
-      {children ? <span className="mt-2 block space-y-1 text-xs leading-5 opacity-90">{children}</span> : null}
+      {children ? <div className="mt-2 space-y-1 text-xs leading-5 opacity-90">{children}</div> : null}
     </button>
   );
 }
@@ -137,33 +137,33 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke, evidence, o
 
   return (
     <section className="rounded-3xl border border-slate-800 bg-slate-900/75 p-6 shadow-xl shadow-slate-950/30">
-      <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Quick Demo Actions</p>
-      <h2 className="text-2xl font-bold text-white">Fast judge testing</h2>
+      <p className="text-sm uppercase tracking-[0.2em] text-cyan-300">Preset Agent Requests</p>
+      <h2 className="text-2xl font-bold text-white">Simulate agent request scenarios</h2>
       {selectedAllowance ? (
         <>
           <p className="mt-2 text-sm text-slate-400">
             Current quick-action target: <span className="font-semibold text-slate-100">{selectedAllowance.agentName}</span> with {formatCurrency(getRemainingAllowance(selectedAllowance))} remaining.
           </p>
-          <p className="mt-2 text-sm text-slate-400">Quick actions always run against the current active demo target.</p>
+          <p className="mt-2 text-sm text-slate-400">These preset scenarios simulate incoming requests from the current active AI agent. AgentLedger automatically evaluates each request against the allowance policy.</p>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <ScenarioPreviewButton title="Approve target spend" onClick={handleApproveSampleSpend} disabled={quickActionsDisabled} variant="approve">
-              <span>Preset: {formatCurrency(validAmount)} {allowedCategory} request</span>
-              <span>Policy: max single spend {formatCurrency(selectedAllowance.maxSingleTransaction)}</span>
-              <span>Expected: Approved</span>
+            <ScenarioPreviewButton title="Simulate valid agent request" onClick={handleApproveSampleSpend} disabled={quickActionsDisabled} variant="approve">
+              <p>Preset: {formatCurrency(validAmount)} {allowedCategory} request</p>
+              <p>Policy: max single spend {formatCurrency(selectedAllowance.maxSingleTransaction)}</p>
+              <p>Expected: Approved</p>
             </ScenarioPreviewButton>
-            <ScenarioPreviewButton title="Block over-limit spend" onClick={handleBlockOverLimitSpend} disabled={quickActionsDisabled} variant="overLimit">
-              <span>Preset: {formatCurrency(overLimitAmount)} {allowedCategory} request</span>
-              <span>Policy: max single spend {formatCurrency(selectedAllowance.maxSingleTransaction)}</span>
-              <span>Expected: Blocked</span>
+            <ScenarioPreviewButton title="Simulate over-limit request" onClick={handleBlockOverLimitSpend} disabled={quickActionsDisabled} variant="overLimit">
+              <p>Preset: {formatCurrency(overLimitAmount)} {allowedCategory} request</p>
+              <p>Policy: max single spend {formatCurrency(selectedAllowance.maxSingleTransaction)}</p>
+              <p>Expected: Blocked</p>
             </ScenarioPreviewButton>
-            <ScenarioPreviewButton title="Block wrong-category spend" onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} variant="wrongCategory">
-              <span>Preset: {formatCurrency(validAmount)} {blockedCategory} request</span>
-              <span>Policy: {allowedCategoriesLabel} only</span>
-              <span>Expected: Blocked</span>
+            <ScenarioPreviewButton title="Simulate unapproved-category request" onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} variant="wrongCategory">
+              <p>Preset: {formatCurrency(validAmount)} {blockedCategory} request</p>
+              <p>Policy: {allowedCategoriesLabel} only</p>
+              <p>Expected: Blocked</p>
             </ScenarioPreviewButton>
-            <ScenarioPreviewButton title="Revoke target allowance" onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} variant="revoke">
-              <span>Preset: revoke {selectedAllowance.agentName}</span>
-              <span>Expected: future spend attempts blocked</span>
+            <ScenarioPreviewButton title="Revoke allowance" onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} variant="revoke">
+              <p>Preset: revoke {selectedAllowance.agentName}</p>
+              <p>Expected: future spend attempts blocked</p>
             </ScenarioPreviewButton>
           </div>
           <QuickActionDecisionEvidence evidence={evidence} />
@@ -174,10 +174,10 @@ export function QuickDemoActions({ allowances, onSimulate, onRevoke, evidence, o
             No active allowance available for quick demo actions. Reissue a historical allowance or reset the demo.
           </p>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <ScenarioPreviewButton title="Approve target spend" onClick={handleApproveSampleSpend} disabled={quickActionsDisabled} variant="approve" />
-            <ScenarioPreviewButton title="Block over-limit spend" onClick={handleBlockOverLimitSpend} disabled={quickActionsDisabled} variant="overLimit" />
-            <ScenarioPreviewButton title="Block wrong-category spend" onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} variant="wrongCategory" />
-            <ScenarioPreviewButton title="Revoke target allowance" onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} variant="revoke" />
+            <ScenarioPreviewButton title="Simulate valid agent request" onClick={handleApproveSampleSpend} disabled={quickActionsDisabled} variant="approve" />
+            <ScenarioPreviewButton title="Simulate over-limit request" onClick={handleBlockOverLimitSpend} disabled={quickActionsDisabled} variant="overLimit" />
+            <ScenarioPreviewButton title="Simulate unapproved-category request" onClick={handleBlockWrongCategorySpend} disabled={quickActionsDisabled} variant="wrongCategory" />
+            <ScenarioPreviewButton title="Revoke allowance" onClick={handleRevokeTargetAllowance} disabled={quickActionsDisabled} variant="revoke" />
           </div>
         </>
       )}

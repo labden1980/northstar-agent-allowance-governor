@@ -21,11 +21,14 @@ describe("main UI", () => {
     expect(html).toContain("Expired Feb 15, 2024");
     expect(html).toContain("Judge Demo Flow");
     expect(html).toContain("Current quick-action target: ");
-    expect(html).toContain("Quick actions always run against the current active demo target.");
-    expect(html).toContain("Approve target spend");
-    expect(html).toContain("Block over-limit spend");
+    expect(html).toContain("These preset scenarios simulate incoming requests from the current active AI agent. AgentLedger automatically evaluates each request against the allowance policy.");
+    expect(html).toContain("Simulate valid agent request");
+    expect(html).toContain("Simulate over-limit request");
     expect(html).toContain("Reset Demo");
     expect(html).toContain("Spend Simulator");
+    expect(html).toContain("Manual Policy Test");
+    expect(html).toContain("Test a specific agent request");
+    expect(html).toContain("Simulate manual agent request");
     expect(html).toContain("Number of days from creation before this allowance automatically expires.");
     expect(html).toContain("Example: 30 days means this policy expires 30 days after creation.");
     expect(html).toContain("Audit Trail");
@@ -87,18 +90,18 @@ describe("quick demo actions", () => {
 
     expect(html).toContain("Current quick-action target: ");
     expect(html).toContain("AI Research Agent");
-    expect(html).toContain("Quick actions always run against the current active demo target.");
-    expect(html).toContain("Approve target spend");
+    expect(html).toContain("These preset scenarios simulate incoming requests from the current active AI agent. AgentLedger automatically evaluates each request against the allowance policy.");
+    expect(html).toContain("Simulate valid agent request");
     expect(html).toContain("Preset: $50 Research request");
     expect(html).toContain("Policy: max single spend $75");
     expect(html).toContain("Expected: Approved");
-    expect(html).toContain("Block over-limit spend");
+    expect(html).toContain("Simulate over-limit request");
     expect(html).toContain("Preset: $125 Research request");
     expect(html).toContain("Expected: Blocked");
-    expect(html).toContain("Block wrong-category spend");
+    expect(html).toContain("Simulate unapproved-category request");
     expect(html).toContain("Preset: $50 Automation request");
     expect(html).toContain("Policy: Research, API, Storage only");
-    expect(html).toContain("Revoke target allowance");
+    expect(html).toContain("Revoke allowance");
     expect(html).toContain("Preset: revoke AI Research Agent");
     expect(html).toContain("Expected: future spend attempts blocked");
     expect(html).not.toContain("Decision Evidence");
@@ -147,7 +150,7 @@ describe("quick demo actions", () => {
     );
 
     expect(html).toContain("No active allowance available for quick demo actions. Reissue a historical allowance or reset the demo.");
-    expect(html).toContain("Approve target spend");
+    expect(html).toContain("Simulate valid agent request");
     expect(html).toContain('disabled=""');
   });
 
