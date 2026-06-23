@@ -41,10 +41,18 @@ export default function App() {
     appendAuditEvent(result.auditEvent);
   };
 
-  const handleSpendSimulation = (result: SpendResult) => {
+  const applySpendResult = (result: SpendResult) => {
     setAllowances((current) => current.map((allowance) => (allowance.id === result.updatedAllowance.id ? result.updatedAllowance : allowance)));
-    setLatestSpendResult(result);
     appendAuditEvent(result.auditEvent);
+  };
+
+  const handleManualSpendSimulation = (result: SpendResult) => {
+    applySpendResult(result);
+    setLatestSpendResult(result);
+  };
+
+  const handlePresetSpendSimulation = (result: SpendResult) => {
+    applySpendResult(result);
   };
 
   const handleResetDemo = () => {
@@ -87,12 +95,12 @@ export default function App() {
             <p className="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Policy test</p>
             <h2 className="mt-1 text-3xl font-black tracking-[-0.03em] text-slate-950">Spend Simulator</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              Run a manual request or use the judge quick actions; the latest decision feedback stays in this simulator area.
+              Run manual agent request tests separately from preset scenarios; both paths share the policy engine and audit trail.
             </p>
           </div>
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] xl:items-start">
-            <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
-            <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} evidence={quickActionEvidence} onEvidenceChange={setQuickActionEvidence} />
+            <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleManualSpendSimulation} />
+            <QuickDemoActions allowances={allowances} onSimulate={handlePresetSpendSimulation} onRevoke={handleRevokeAllowance} evidence={quickActionEvidence} onEvidenceChange={setQuickActionEvidence} />
           </div>
         </section>
 
