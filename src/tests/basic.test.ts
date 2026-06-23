@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import App from "../App";
 import { AllowanceManagement } from "../components/AllowanceManagement";
+import { QuickActionDecisionEvidence } from "../components/QuickActionDecisionEvidence";
 import { QuickDemoActions } from "../components/QuickDemoActions";
 import { SpendSimulator } from "../components/SpendSimulator";
 import { getEffectiveStatus } from "../lib/allowanceEngine";
@@ -79,6 +80,8 @@ describe("quick demo actions", () => {
         allowances: sampleAllowances,
         onSimulate: () => undefined,
         onRevoke: () => undefined,
+        evidence: null,
+        onEvidenceChange: () => undefined,
       }),
     );
 
@@ -87,6 +90,7 @@ describe("quick demo actions", () => {
     expect(html).toContain("Quick actions always run against the current active demo target.");
     expect(html).toContain("Approve target spend");
     expect(html).toContain("Revoke target allowance");
+    expect(html).not.toContain("Decision Evidence");
     expect(html).not.toContain("Revoke selected allowance");
   });
 
@@ -101,6 +105,8 @@ describe("quick demo actions", () => {
         allowances: closedAllowances,
         onSimulate: () => undefined,
         onRevoke: () => undefined,
+        evidence: null,
+        onEvidenceChange: () => undefined,
       }),
     );
 
@@ -108,6 +114,36 @@ describe("quick demo actions", () => {
     expect(html).toContain("Approve target spend");
     expect(html).toContain('disabled=""');
   });
+
+  it("renders compact decision evidence when a quick action produces a result", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(QuickActionDecisionEvidence, {
+        evidence: {
+          kind: "spend",
+          decision: "blocked",
+          agentName: "AI Research Agent",
+          amount: 125,
+          category: "Research",
+          maxSingleTransaction: 75,
+          allowedCategories: ["Research", "API", "Storage"],
+          reason: "Request exceeds the maximum single-spend limit by $50.",
+        },
+      }),
+    );
+
+    expect(html).toContain("Decision Evidence");
+    expect(html).toContain("Attempted spend");
+    expect(html).toContain("AI Research Agent");
+    expect(html).toContain("Requested amount: ");
+    expect(html).toContain("$125");
+    expect(html).toContain("Category: ");
+    expect(html).toContain("Research");
+    expect(html).toContain("Maximum single spend: ");
+    expect(html).toContain("$75");
+    expect(html).toContain("BLOCKED");
+    expect(html).toContain("Request exceeds the maximum single-spend limit by $50.");
+  });
+
 });
 
 describe("allowance management reissue guard", () => {

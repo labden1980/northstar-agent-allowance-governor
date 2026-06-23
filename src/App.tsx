@@ -7,6 +7,7 @@ import { DashboardStats } from "./components/DashboardStats";
 import { DemoGuide } from "./components/DemoGuide";
 import { AppShell } from "./components/layout/AppShell";
 import { QuickDemoActions } from "./components/QuickDemoActions";
+import type { QuickActionDecisionEvidenceState } from "./components/QuickActionDecisionEvidence";
 import { SimulationNotice } from "./components/SimulationNotice";
 import { SolanaMappingPanel } from "./components/SolanaMappingPanel";
 import { SpendSimulator } from "./components/SpendSimulator";
@@ -18,6 +19,7 @@ export default function App() {
   const [allowances, setAllowances] = useState<Allowance[]>(sampleAllowances);
   const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
   const [latestSpendResult, setLatestSpendResult] = useState<SpendResult | null>(null);
+  const [quickActionEvidence, setQuickActionEvidence] = useState<QuickActionDecisionEvidenceState | null>(null);
 
   const appendAuditEvent = (event: AuditEvent) => {
     setAuditEvents((current) => [...current, event]);
@@ -49,6 +51,7 @@ export default function App() {
     setAllowances(sampleAllowances.map((allowance) => ({ ...allowance, allowedCategories: [...allowance.allowedCategories] })));
     setAuditEvents([]);
     setLatestSpendResult(null);
+    setQuickActionEvidence(null);
   };
 
   return (
@@ -89,7 +92,7 @@ export default function App() {
           </div>
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] xl:items-start">
             <SpendSimulator allowances={allowances} latestSpendResult={latestSpendResult} onSimulate={handleSpendSimulation} />
-            <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} />
+            <QuickDemoActions allowances={allowances} onSimulate={handleSpendSimulation} onRevoke={handleRevokeAllowance} evidence={quickActionEvidence} onEvidenceChange={setQuickActionEvidence} />
           </div>
         </section>
 
